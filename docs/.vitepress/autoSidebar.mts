@@ -1,11 +1,11 @@
-﻿import fs from 'fs'
+import fs from 'fs'
 import path from 'path'
 
 const rControl = /[\u0000-\u001f]/g
-const rSpecial = /[\s~`!@#$%^&*()\-_+=[\]{}|\\;:"'<>?,.!?;:，。！？、；：（）《》【】“”‘’\/]+/g
+const rSpecial = /[\s~`!@#$%^&*()\-_+=[\]{}|\\;:"'“”‘’<>，。！？、；：（）《》【】,.?/]+/g
 const rCombining = /[\u0300-\u036F]/g
 
-// Generate anchors with the same slug logic used by VitePress sidebar links.
+// 锚点生成规则：直接对齐 VitePress 右侧目录的 slug 逻辑。
 function generateAnchor(text: string) {
   return text
     .normalize('NFKD')
@@ -68,7 +68,7 @@ export function getSidebar() {
     return f.endsWith('.md') && f.toLowerCase() !== 'index.md'
   })
 
-  // Keep the sidebar order consistent with the staging script.
+  // 排序规则和构建脚本保持一致：数字章节在前，普通无编号页在中间，附录永远在最后。
   files.sort((a, b) => {
     const [groupA, partsA, stemA] = buildSidebarSortKey(a)
     const [groupB, partsB, stemB] = buildSidebarSortKey(b)
@@ -93,13 +93,13 @@ export function getSidebar() {
 
   const sidebar: any[] = []
 
-  // Build one sidebar entry for each Markdown page.
+  // 遍历每个 Markdown 文件生成侧边栏。
   for (const file of files) {
     const name = file.replace(/\.md$/, '')
     const content = fs.readFileSync(path.join(pageDir, file), 'utf-8')
     const lockedPreviewPage = isLockedPreviewPage(content)
 
-    // Parse headings line by line and ignore fenced code blocks.
+    // 按行解析标题，跳过代码块内的伪标题。
     const lines = content.split('\n')
     const items: any[] = []
     let pageTitle = ''

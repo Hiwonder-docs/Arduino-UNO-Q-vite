@@ -1,8 +1,7 @@
 node_modules/
-docs/.vitepress/dist/
-docs/.vitepress/cache/
-docs/.vitepress/.temp/
-.claude/
+/docs/
+/scripts/
+/.github/
 *.log
 .DS_Store
 Thumbs.db

@@ -1,6 +1,6 @@
-# Arduino UNO Q Documentation
+# arduino-uno-q Documentation
 
-This repository contains the Arduino UNO Q VitePress documentation site. The
+This repository contains the arduino-uno-q VitePress documentation site. The
 documentation source files are Markdown files under `docs/docs/`.
 
 ## Local development
@@ -12,32 +12,29 @@ npm ci
 npm run docs:dev
 ```
 
-Build the production site:
-
-```bash
-npm run docs:build
-```
-
-The production files are generated in `docs/.vitepress/dist/`.
-
-## GitHub Pages deployment
-
-Build and stage the static files before pushing:
+Build the production site and stage the artifacts:
 
 ```bash
 npm run docs:build
 npm run docs:stage-main
 ```
 
-Commit the generated `projects/` directory, then configure GitHub Pages with
-**Deploy from a branch**, **main**, and **/(root)**. The GitHub Pages URL is:
+The staged production files are generated in `projects/arduino-uno-q/en/latest/`.
+
+## GitHub Pages deployment
+
+The build artifacts under `projects/` are committed to the repository. Open
+**Settings > Pages**, select **Deploy from a branch**, and choose **main** and
+**/(root)**. Do not bind a custom domain.
+
+The GitHub Pages direct URL is:
 
 ```text
-https://hiwonder-docs.github.io/Arduino-UNO-Q-vite/projects/arduino-uno-q/en/latest/
+https://hiwonder-docs.github.io/arduino-uno-q-vite/projects/arduino-uno-q/en/latest/
 ```
 
-When the wiki reverse proxy is configured, the same site path becomes:
+The public-facing URL (via the baota Nginx reverse proxy) is:
 
 ```text
-https://wiki.hiwonder.com/projects/arduino-uno-q/en/latest/
+https://wiki-test.hiwonder.com/projects/arduino-uno-q/en/latest/
 ```

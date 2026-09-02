@@ -1,5 +1,6 @@
 ﻿import { mkdir, rm, cp, readdir, readFile, writeFile, unlink } from 'fs/promises'
 import { fileURLToPath } from 'url'
+import { access } from 'fs/promises'
 import { dirname, join, extname, basename } from 'path'
 import sharp from 'sharp'
 
@@ -16,6 +17,15 @@ await cp(
   targetDir,
   { recursive: true }
 )
+
+const sourceCodeDir = join(repositoryRoot, 'docs/_static/source_code')
+if (await pathExists(sourceCodeDir)) {
+  await cp(
+    sourceCodeDir,
+    join(targetDir, '_static/source_code'),
+    { recursive: true, force: true }
+  )
+}
 
 await convertRasterImagesToWebp(targetDir)
 
@@ -35,6 +45,15 @@ async function walkFiles(rootDir) {
   }
 
   return files
+}
+
+async function pathExists(filePath) {
+  try {
+    await access(filePath)
+    return true
+  } catch {
+    return false
+  }
 }
 
 function isConvertibleRasterImage(filePath) {
@@ -68,7 +87,7 @@ async function convertRasterImagesToWebp(rootDir) {
     await sharp(filePath)
       .webp({ quality: 90, alphaQuality: 100, effort: 6 })
       .toFile(webpPath)
-    await removeFileWithRetry(filePath)
+    await unlink(filePath)
     replacements.set(basename(filePath), basename(webpPath))
   }
 
@@ -87,22 +106,6 @@ async function convertRasterImagesToWebp(rootDir) {
 
     if (changed) {
       await writeFile(filePath, content)
-    }
-  }
-}
-
-async function removeFileWithRetry(filePath, maxAttempts = 5) {
-  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
-    try {
-      await unlink(filePath)
-      return
-    } catch (error) {
-      const code = error && typeof error === 'object' ? error.code : undefined
-      if (attempt === maxAttempts || (code !== 'EBUSY' && code !== 'EPERM')) {
-        throw error
-      }
-
-      await new Promise((resolve) => setTimeout(resolve, attempt * 100))
     }
   }
 }

@@ -4,6 +4,7 @@ import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { inBrowser, useData, useRoute, withBase } from 'vitepress'
 import PageRedirect from './PageRedirect.vue'
 import ImageViewer from './ImageViewer.vue'
+import FeedbackWidget from './FeedbackWidget.vue'
 
 const { frontmatter } = useData()
 const route = useRoute()
@@ -38,7 +39,7 @@ function getPathWithoutBase(path: string) {
 const isRedirectEntryRoute = computed(() => {
   const currentPath = inBrowser ? window.location.pathname : route.path
   const pathWithoutBase = getPathWithoutBase(currentPath)
-  return pathWithoutBase === '/' || pathWithoutBase === '/index.html' || pathWithoutBase === '/docs/' || pathWithoutBase === '/docs/index.html'
+  return pathWithoutBase === '/' || pathWithoutBase === '/index.html' || pathWithoutBase === '/page/' || pathWithoutBase === '/page/index.html'
 })
 const isRedirectPage = computed(() => frontmatter.value.layout === 'page-redirect' && isRedirectEntryRoute.value)
 
@@ -1033,4 +1034,5 @@ onBeforeUnmount(() => {
     :alt="lightboxAlt"
     @close="closeLightbox"
   />
+  <FeedbackWidget />
 </template>
